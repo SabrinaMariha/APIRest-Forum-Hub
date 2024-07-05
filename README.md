@@ -1,4 +1,4 @@
-# ForumHub
+# Fórum Hub
 
 
 ForumHub é uma aplicação backend construída como parte do desafio da ALURA + ONE (Oracle Next Education). Este projeto é uma API RESTful que gerencia cursos, tópicos, e usuários.
