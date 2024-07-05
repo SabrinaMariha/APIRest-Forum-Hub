@@ -68,6 +68,24 @@ public class TopicoController {
         topico.atualizarTopico(dados, usuario);
         return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
     }
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity deletarTopico(@PathVariable Long id, Authentication authentication) {
+        Usuario usuario = usuarioRepository.findByEmail(authentication.getName());
+        var topico = topicoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tópico não encontrado."));
 
+        if(!usuario.verificarAutorizacao(topico))
+            throw new IllegalArgumentException("Solicitação não autorizada. Só o criador do tópico pode deletá-lo.");
+
+        //deletar tópico definitivamente
+        topicoRepository.delete(topico);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity detalharTopico(@PathVariable Long id){
+        var topico = topicoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tópico não encontrado."));
+        return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
+    }
 
 }
