@@ -46,10 +46,11 @@ _Aqui estão alguns dos principais endpoints disponíveis na API:_
 #### Tópicos
 - **POST /topicos:** Criar um novo tópico.
 - **GET /topicos:** Listar 10 tópicos por página em ordem crescente.
-- **GET /topicos/{id}:** Detalhar um tópico específico.
-- **PUT /topicos/{id}:** Atualizar um tópico.
-- **DELETE /topicos/{id}:** Excluir um tópico.
-
+- **GET /topicos/{id}:** Detalhar um tópico específico. ⚠️ 
+- **PUT /topicos/{id}:** Atualizar um tópico. ⚠️
+- **DELETE /topicos/{id}:** Excluir um tópico. ⚠️
+  
+⚠️ Autorização: somente usuários criadores dos tópicos podem executar essas ações destacadas.
 
 # Implementações futuras :rocket:
 
