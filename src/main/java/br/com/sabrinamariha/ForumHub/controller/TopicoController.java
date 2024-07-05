@@ -29,7 +29,13 @@ public class TopicoController {
     public ResponseEntity<DadosDetalhamentoTopico> registrarTopico(@RequestBody @Valid DadosCadastroTopico dados, UriComponentsBuilder uriBuilder, Authentication authentication) {
 
         Usuario usuario= usuarioRepository.findByEmail(authentication.getName());
-        var topico = new Topico(dados, usuario);
+
+
+        if(!topicoRepository.validacaoDuplicidadeTopico(dados.titulo(),dados.mensagem()))
+            throw new IllegalArgumentException("Já existem tópicos com esses dados. Veja se ele atende a sua necessidade ou altere o conteúdo.");
+
+
+        var topico = new Topico(dados,usuario);
 
         topicoRepository.save(topico);
         var uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
@@ -49,11 +55,19 @@ public class TopicoController {
     public ResponseEntity<DadosDetalhamentoTopico> atualizarTopico(@PathVariable Long id, @RequestBody @Valid DadosAtualizarTopico dados, Authentication authentication){
         Usuario usuario = usuarioRepository.findByEmail(authentication.getName());
         var topico = topicoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tópico não encontrado."));
-        var autorizado=usuario.verificarAutorizacao(topico);
-        if(!autorizado){
+
+
+        if(!usuario.verificarAutorizacao(topico))
             throw new IllegalArgumentException("Solicitação não autorizada. Só o criador do tópico pode alterá-lo.");
-        }
+
+
+        if(!topicoRepository.validacaoDuplicidadeTopico(dados.titulo(),dados.mensagem()))
+            throw new IllegalArgumentException("Já existem tópicos com esses dados. Veja se ele atende a sua necessidade ou altere o conteúdo.");
+
+
         topico.atualizarTopico(dados, usuario);
         return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
     }
+
+
 }
