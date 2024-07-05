@@ -1,5 +1,6 @@
 package br.com.sabrinamariha.ForumHub.topico;
 
+import br.com.sabrinamariha.ForumHub.usuario.DadosAutenticacao;
 import br.com.sabrinamariha.ForumHub.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,14 @@ public class Topico {
         this.usuario = usuario;
         this.curso = dados.curso();
         this.ativo = true;
+    }
+
+    public void atualizarTopico(DadosAtualizarTopico dados, Usuario usuario) {
+        this.titulo = dados.titulo();
+        this.mensagem = dados.mensagem();
+        this.curso = dados.curso();
+        this.dataCriacao = LocalDateTime.now();
+
     }
 }
 

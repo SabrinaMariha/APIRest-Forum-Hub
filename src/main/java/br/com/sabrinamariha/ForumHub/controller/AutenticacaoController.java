@@ -38,7 +38,7 @@ public class AutenticacaoController {
 //    @PostMapping("/cadastro")
 //    @Transactional
 //    public ResponseEntity cadastrarUsuario(@RequestBody @Valid DadosAutenticacao dados){
-//        var usuario = new Usuario(2L,"Sabrina",dados.email(), dados.senha());
+//        var usuario = new Usuario(3L,"Victor",dados.email(), dados.senha());
 //        usuarioRepository.save(usuario);
 //        return ResponseEntity.ok().build();
 //    }

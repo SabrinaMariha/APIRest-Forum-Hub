@@ -1,6 +1,7 @@
 package br.com.sabrinamariha.ForumHub.controller;
 
 import br.com.sabrinamariha.ForumHub.topico.*;
+import br.com.sabrinamariha.ForumHub.usuario.DadosAutenticacao;
 import br.com.sabrinamariha.ForumHub.usuario.Usuario;
 import br.com.sabrinamariha.ForumHub.usuario.UsuarioRepository;
 import jakarta.validation.Valid;
@@ -41,5 +42,18 @@ public class TopicoController {
         var page = topicoRepository.findAll(paginacao)
                 .map(DadosListagemTopico::new);
         return ResponseEntity.ok(page);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoTopico> atualizarTopico(@PathVariable Long id, @RequestBody @Valid DadosAtualizarTopico dados, Authentication authentication){
+        Usuario usuario = usuarioRepository.findByEmail(authentication.getName());
+        var topico = topicoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tópico não encontrado."));
+        var autorizado=usuario.verificarAutorizacao(topico);
+        if(!autorizado){
+            throw new IllegalArgumentException("Solicitação não autorizada. Só o criador do tópico pode alterá-lo.");
+        }
+        topico.atualizarTopico(dados, usuario);
+        return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
     }
 }

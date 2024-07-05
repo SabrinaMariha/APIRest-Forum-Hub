@@ -1,5 +1,6 @@
 package br.com.sabrinamariha.ForumHub.usuario;
 
+import br.com.sabrinamariha.ForumHub.topico.Topico;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -57,6 +58,13 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() {
+        return true;
+    }
+
+    public boolean verificarAutorizacao(Topico topico) {
+        if (!this.equals(topico.getUsuario())) {
+            return false;
+        }
         return true;
     }
 }
