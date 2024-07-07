@@ -26,7 +26,7 @@ public class SecurityConfigurations {
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login/**","/usuarios/cadastro").permitAll()
                         .requestMatchers("/v3/api-docs/**","swagger-ui.html","/swagger-ui/**").permitAll()
                         //.requestMatchers(HttpMethod.DELETE,"/medicos").hasRole("ADMIN")// Permitir acesso ao endpoint /login
                         //.requestMatchers(HttpMethod.DELETE,"/pacientes").hasRole("ADMIN")
