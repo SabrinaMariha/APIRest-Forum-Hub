@@ -1,10 +1,8 @@
 package br.com.sabrinamariha.ForumHub.controller;
 
-import br.com.sabrinamariha.ForumHub.usuario.DadosAutenticacao;
-import br.com.sabrinamariha.ForumHub.usuario.Usuario;
+import br.com.sabrinamariha.ForumHub.usuario.*;
 import br.com.sabrinamariha.ForumHub.security.DadosToken;
 import br.com.sabrinamariha.ForumHub.security.TokenService;
-import br.com.sabrinamariha.ForumHub.usuario.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +33,6 @@ public class AutenticacaoController {
         var tokenJWT = tokenService.gerarToken((Usuario) autenticacao.getPrincipal());
         return ResponseEntity.ok(new DadosToken(tokenJWT));
     }
-//    @PostMapping("/cadastro")
-//    @Transactional
-//    public ResponseEntity cadastrarUsuario(@RequestBody @Valid DadosAutenticacao dados){
-//        var usuario = new Usuario(3L,"Victor",dados.email(), dados.senha());
-//        usuarioRepository.save(usuario);
-//        return ResponseEntity.ok().build();
-//    }
+
 
 }
