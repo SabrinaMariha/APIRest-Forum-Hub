@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +26,14 @@ public class Usuario implements UserDetails {
     private String nome;
     private String email;
     private String senha;
+
+
+
+    public Usuario(DadosCadastroUsuario dados) {
+        this.nome = dados.nome();
+        this.email = dados.email();
+        this.senha = new BCryptPasswordEncoder().encode(dados.senha());
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -66,5 +75,11 @@ public class Usuario implements UserDetails {
             return false;
         }
         return true;
+    }
+
+    public void atualizar(DadosAtualizarUsuario dados) {
+        this.nome = dados.nome();
+        this.email = dados.email();
+        this.senha = new BCryptPasswordEncoder().encode(dados.senha());
     }
 }
