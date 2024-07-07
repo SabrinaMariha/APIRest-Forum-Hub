@@ -1,7 +1,8 @@
 package br.com.sabrinamariha.ForumHub.controller;
 
+import br.com.sabrinamariha.ForumHub.exceptions.DuplicidadeTopico;
+import br.com.sabrinamariha.ForumHub.exceptions.NaoAutorizadoTopico;
 import br.com.sabrinamariha.ForumHub.topico.*;
-import br.com.sabrinamariha.ForumHub.usuario.DadosAutenticacao;
 import br.com.sabrinamariha.ForumHub.usuario.Usuario;
 import br.com.sabrinamariha.ForumHub.usuario.UsuarioRepository;
 import jakarta.validation.Valid;
@@ -14,8 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/topicos")
@@ -32,7 +31,7 @@ public class TopicoController {
 
 
         if(!topicoRepository.validacaoDuplicidadeTopico(dados.titulo(),dados.mensagem()))
-            throw new IllegalArgumentException("Já existem tópicos com esses dados. Veja se ele atende a sua necessidade ou altere o conteúdo.");
+            throw new DuplicidadeTopico("Já existem tópicos com esses dados. Veja se ele atende a sua necessidade ou altere o conteúdo.");
 
 
         var topico = new Topico(dados,usuario);
@@ -58,11 +57,11 @@ public class TopicoController {
 
 
         if(!usuario.verificarAutorizacao(topico))
-            throw new IllegalArgumentException("Solicitação não autorizada. Só o criador do tópico pode alterá-lo.");
+            throw new NaoAutorizadoTopico("Solicitação não autorizada. Só o criador do tópico pode alterá-lo.");
 
 
         if(!topicoRepository.validacaoDuplicidadeTopico(dados.titulo(),dados.mensagem()))
-            throw new IllegalArgumentException("Já existem tópicos com esses dados. Veja se ele atende a sua necessidade ou altere o conteúdo.");
+            throw new DuplicidadeTopico("Já existem tópicos com esses dados. Veja se ele atende a sua necessidade ou altere o conteúdo.");
 
 
         topico.atualizarTopico(dados, usuario);
@@ -75,7 +74,7 @@ public class TopicoController {
         var topico = topicoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tópico não encontrado."));
 
         if(!usuario.verificarAutorizacao(topico))
-            throw new IllegalArgumentException("Solicitação não autorizada. Só o criador do tópico pode deletá-lo.");
+            throw new NaoAutorizadoTopico("Solicitação não autorizada. Só o criador do tópico pode deletá-lo.");
 
         //deletar tópico definitivamente
         topicoRepository.delete(topico);
