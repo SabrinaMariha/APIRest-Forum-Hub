@@ -47,5 +47,9 @@ public class Topico {
         this.dataCriacao = LocalDateTime.now();
 
     }
+
+    public void alterarStatus() {
+        this.status="RESPONDIDO";
+    }
 }
 

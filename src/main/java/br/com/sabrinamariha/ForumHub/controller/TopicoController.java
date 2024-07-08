@@ -2,6 +2,8 @@ package br.com.sabrinamariha.ForumHub.controller;
 
 import br.com.sabrinamariha.ForumHub.exceptions.DuplicidadeTopico;
 import br.com.sabrinamariha.ForumHub.exceptions.NaoAutorizadoTopico;
+import br.com.sabrinamariha.ForumHub.resposta.Resposta;
+import br.com.sabrinamariha.ForumHub.resposta.RespostaRepository;
 import br.com.sabrinamariha.ForumHub.topico.*;
 import br.com.sabrinamariha.ForumHub.usuario.Usuario;
 import br.com.sabrinamariha.ForumHub.usuario.UsuarioRepository;
@@ -16,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/topicos")
 public class TopicoController {
@@ -23,6 +27,8 @@ public class TopicoController {
     private TopicoRepository topicoRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private RespostaRepository respostaRepository;
     @PostMapping
     @Transactional
     public ResponseEntity<DadosDetalhamentoTopico> registrarTopico(@RequestBody @Valid DadosCadastroTopico dados, UriComponentsBuilder uriBuilder, Authentication authentication) {
@@ -84,6 +90,24 @@ public class TopicoController {
     @GetMapping("/{id}")
     public ResponseEntity detalharTopico(@PathVariable Long id){
         var topico = topicoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tópico não encontrado."));
+
+        List<Resposta> respostas = respostaRepository.findByTopicoId(id);
+
+        return ResponseEntity.ok(new DadosDetalhamentoTopico(topico, respostas));
+
+
+    }
+
+    @PutMapping("/{id}/alterarStatus")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoTopico> alterarStatus(@PathVariable Long id, Authentication authentication){
+        Usuario usuario = usuarioRepository.findByEmail(authentication.getName());
+        var topico = topicoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tópico não encontrado."));
+
+        if(!usuario.verificarAutorizacao(topico))
+            throw new NaoAutorizadoTopico("Solicitação não autorizada. Só o criador do tópico pode alterar o status.");
+
+        topico.alterarStatus();
         return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
     }
 
