@@ -34,6 +34,10 @@ public class TratadorDeErros {
     public ResponseEntity tratarErro401(NaoAutorizadoUsuario ex){
         return ResponseEntity.status(401).body(ex.getMessage());
     }
+    @ExceptionHandler(NaoAutorizadoResposta.class)
+    public ResponseEntity tratarErro401(NaoAutorizadoResposta ex){
+        return ResponseEntity.status(401).body(ex.getMessage());
+    }
 
 
 
